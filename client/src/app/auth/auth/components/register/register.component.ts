@@ -11,7 +11,7 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 })
 export class RegisterComponent {
   error: string | null = null;
-  form = this.fb.group({
+  form = this.fb.nonNullable.group({
     email: ['', Validators.required],
     username: ['', Validators.required],
     password: ['', Validators.required]
@@ -20,7 +20,7 @@ export class RegisterComponent {
 
 
   onSubmit(): void {
-    this.authService.register(this.form.value).subscribe({
+    this.authService.register(this.form.getRawValue()).subscribe({
       next: (currentUser) => {
         console.log('currentuser', currentUser)
         this.authService.setToken(currentUser)
@@ -28,6 +28,7 @@ export class RegisterComponent {
       },
       error: (err: HttpErrorResponse) => {
         console.log('error', err.error)
+        this.error = err.error.join(',')
       }
     })
   }
